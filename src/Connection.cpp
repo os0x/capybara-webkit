@@ -11,6 +11,7 @@
 #include "Execute.h"
 #include "FrameFocus.h"
 #include "Header.h"
+#include "Render.h"
 
 #include <QTcpSocket>
 #include <iostream>
@@ -56,7 +57,7 @@ void Connection::readDataBlock() {
   buffer[m_expectingDataSize] = 0;
   processNext(buffer);
   m_expectingDataSize = -1;
-  delete buffer;
+  delete[] buffer;
 }
 
 void Connection::processNext(const char *data) {
@@ -96,7 +97,7 @@ void Connection::startCommand() {
               SLOT(finishCommand(Response *)));
       m_command->start(m_arguments);
     } else {
-      QString failure = QString("Unknown command: ") +  m_commandName + "\n";
+      QString failure = QString("[Capybara WebKit] Unknown command: ") +  m_commandName + "\n";
       writeResponse(new Response(false, failure));
     }
     m_commandName = QString();
