@@ -1117,7 +1117,6 @@ describe Capybara::Driver::Webkit do
           [body]]
       end
     end
-
     before { set_automatic_reload false }
     after { set_automatic_reload true }
 
@@ -1347,6 +1346,38 @@ describe Capybara::Driver::Webkit do
     it "submits a form without clicking" do
       subject.find("//form")[0].submit
       subject.body.should include "Congrats"
+    end
+  end
+  context "slow ajax app" do
+    before(:all) do
+      @app = lambda do |env|
+        body = <<-HTML
+          <html><body>
+            <a href="/ajax" id=a>ajax</a>
+            <p id=path>#{env['PATH_INFO']}</p>
+            <script>
+              var a = document.getElementById('a');
+              var path = document.getElementById('path');
+              a.onclick = function(e) {
+                e.preventDefault();
+                var x = new XMLHttpRequest();
+                x.open('GET', a.href, true);
+                x.onload = function(){
+                  var d= document.createElement('div');
+                  d.innerHTML = x.responseText;
+                  path.textContent = d.querySelector('#path').textContent;
+                };
+                x.send();
+              };
+            </script>
+          </body></html>
+        HTML
+        sleep(0.5)
+      end
+    end
+    it "waits for a request to load" do
+      subject.find("//a").first.click
+      subject.find("//p").first.text.should == "/ajax"
     end
   end
 end
