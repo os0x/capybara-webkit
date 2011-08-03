@@ -257,4 +257,28 @@ Capybara = {
     mouseTrigger('mouseup', options);
   }
 };
+window.addEventListener('unload', function(){
+  if(window._$jscoverage) {
+    var rv = JSON.parse(CapybaraObject.get());
+    for( var file_name in window._$jscoverage ) {
+      //console.log(rv[file_name] + ' :: ' + file_name + ' : ' + location.href);
+      var jscov = window._$jscoverage[ file_name ];
+      var file_report = rv[ file_name ] || (rv[file_name] = {
+        coverage: new Array( jscov.length ),
+        source:   new Array( jscov.length ),
+        conditionals: new Array(jscov.length)
+      });
+      for( var i=0; i < jscov.length; ++i ) {
+        var hit_count = jscov[ i ] !== undefined ? jscov[ i ] : null;
+
+        file_report.coverage[ i ] = file_report.coverage[ i ] ? file_report.coverage[ i ] + hit_count : hit_count;
+        file_report.source[ i ]   = jscov.source[ i ];
+        if (jscov.conditionals && jscov.conditionals[i]) {
+          file_report.conditionals[i] = jscov.conditionals[i];
+        }
+      }
+    }
+    CapybaraObject.set(JSON.stringify(rv,null,2), location.port);
+  }
+}, false);
 

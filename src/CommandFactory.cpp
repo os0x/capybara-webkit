@@ -18,6 +18,7 @@
 #include "ClearCookies.h"
 #include "GetCookies.h"
 #include "SetProxy.h"
+#include "Exit.h"
 #include "ConsoleMessages.h"
 #include "RequestedUrl.h"
 #include "CurrentUrl.h"
