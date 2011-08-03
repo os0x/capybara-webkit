@@ -12,6 +12,7 @@ WebPage::WebPage(QObject *parent) : QWebPage(parent) {
   setUserStylesheet();
 
   m_loading = false;
+
   this->setCustomNetworkAccessManager();
 
   connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
@@ -26,6 +27,16 @@ WebPage::WebPage(QObject *parent) : QWebPage(parent) {
 void WebPage::setCustomNetworkAccessManager() {
   NetworkAccessManager *manager = new NetworkAccessManager();
   manager->setCookieJar(new NetworkCookieJar());
+
+  m_spec_running = false;
+  bool jscoverage_flag = !QString(getenv("JSCOVERAGE_REPORT")).isEmpty();
+  QString jscoverage_path = QString(getenv("JSCOVERAGE_PATH"));
+
+  m_javascript_trigger.set_page(this);
+
+  manager->setJscoverageFlag(jscoverage_flag);
+  manager->setJscoveragePath(jscoverage_path);
+
   this->setNetworkAccessManager(manager);
   connect(manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(replyFinished(QNetworkReply *)));
   connect(manager, SIGNAL(sslErrors(QNetworkReply *, QList<QSslError>)), this, SLOT(ignoreSslErrors(QNetworkReply *, QList<QSslError>)));
@@ -58,6 +69,10 @@ QString WebPage::userAgentForUrl(const QUrl &url ) const {
   }
 }
 
+bool WebPage::getJscoverageFlag() {
+  return m_jscoverage_flag;
+}
+
 void WebPage::setUserAgent(QString userAgent) {
   m_userAgent = userAgent;
 }
@@ -69,6 +84,7 @@ void WebPage::frameCreated(QWebFrame * frame) {
 
 void WebPage::injectJavascriptHelpers() {
   QWebFrame* frame = qobject_cast<QWebFrame *>(QObject::sender());
+  frame->addToJavaScriptWindowObject(QString("CapybaraObject"), &m_javascript_trigger);
   frame->evaluateJavaScript(m_capybaraJavascript);
 }
 
@@ -116,15 +132,28 @@ bool WebPage::javaScriptPrompt(QWebFrame *frame, const QString &message, const Q
 
 void WebPage::loadStarted() {
   m_loading = true;
+  m_spec_running = false;
+}
+
+void WebPage::specStart() {
+  m_spec_running = true;
+}
+
+void WebPage::specFinished() {
+  m_spec_running = false;
+  if (!m_loading) {
+    emit loadAndSpecFinished(m_success);
+  }
 }
 
 void WebPage::loadFinished(bool success) {
+  m_success = success;
   m_loading = false;
   emit pageFinished(success);
 }
 
 bool WebPage::isLoading() const {
-  return m_loading;
+  return m_loading || m_spec_running;
 }
 
 QString WebPage::failureString() {

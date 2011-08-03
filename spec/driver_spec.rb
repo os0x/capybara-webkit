@@ -1005,7 +1005,6 @@ describe Capybara::Driver::Webkit do
           [body]]
       end
     end
-
     before { set_automatic_reload false }
     after { set_automatic_reload true }
 
@@ -1073,6 +1072,43 @@ describe Capybara::Driver::Webkit do
         subject.visit("/redirect")
         subject.find("//p").first.text.should == "finished"
       end
+    end
+  end
+
+  context "slow ajax app" do
+    before(:all) do
+      @app = lambda do |env|
+        body = <<-HTML
+          <html><body>
+            <a href="/ajax" id=a>ajax</a>
+            <p id=path>#{env['PATH_INFO']}</p>
+            <script>
+              var a = document.getElementById('a');
+              var path = document.getElementById('path');
+              a.onclick = function(e) {
+                e.preventDefault();
+                var x = new XMLHttpRequest();
+                x.open('GET', a.href, true);
+                x.onload = function(){
+                  var d= document.createElement('div');
+                  d.innerHTML = x.responseText;
+                  path.textContent = d.querySelector('#path').textContent;
+                };
+                x.send();
+              };
+            </script>
+          </body></html>
+        HTML
+        sleep(0.5)
+        [200,
+          { 'Content-Type' => 'text/html', 'Content-Length' => body.length.to_s },
+          [body]]
+      end
+    end
+
+    it "waits for a request to load" do
+      subject.find("//a").first.click
+      subject.find("//p").first.text.should == "/ajax"
     end
   end
 end

@@ -1,4 +1,5 @@
 #include <QtWebKit>
+#include "JavascriptTrigger.h"
 
 class WebPage : public QWebPage {
   Q_OBJECT
@@ -9,6 +10,7 @@ class WebPage : public QWebPage {
     QVariant invokeCapybaraFunction(QString &name, QStringList &arguments);
     QString failureString();
     QString userAgentForUrl(const QUrl &url ) const;
+    bool getJscoverageFlag();
     void setUserAgent(QString userAgent);
     int getLastStatus();
     void resetResponseHeaders();
@@ -23,6 +25,8 @@ class WebPage : public QWebPage {
     void injectJavascriptHelpers();
     void loadStarted();
     void loadFinished(bool);
+    void specStart();
+    void specFinished();
     bool isLoading() const;
     QString pageHeaders();
     void frameCreated(QWebFrame *);
@@ -33,6 +37,9 @@ class WebPage : public QWebPage {
   signals:
     void pageFinished(bool);
 
+  signals:
+    void loadAndSpecFinished(bool);
+
   protected:
     virtual void javaScriptConsoleMessage(const QString &message, int lineNumber, const QString &sourceID);
     virtual void javaScriptAlert(QWebFrame *frame, const QString &message);
@@ -41,9 +48,13 @@ class WebPage : public QWebPage {
     virtual QString chooseFile(QWebFrame * parentFrame, const QString &suggestedFile);
 
   private:
+    JavascriptTrigger m_javascript_trigger;
     QString m_capybaraJavascript;
     QString m_userAgent;
     bool m_loading;
+    bool m_spec_running;
+    bool m_success;
+    bool m_jscoverage_flag;
     QString getLastAttachedFileName();
     void loadJavascript();
     void setUserStylesheet();
