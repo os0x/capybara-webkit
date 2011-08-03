@@ -7,7 +7,7 @@ class NetworkAccessManager : public QNetworkAccessManager {
   Q_OBJECT
 
   public:
-    NetworkAccessManager(QObject *parent = 0);
+    NetworkAccessManager(bool jscoverage_flag, QObject *parent = 0);
     void addHeader(QString key, QString value);
 
   protected:
@@ -15,4 +15,5 @@ class NetworkAccessManager : public QNetworkAccessManager {
 
   private:
     QHash<QString, QString> m_headers;
+    bool m_jscoverage_flag;
 };

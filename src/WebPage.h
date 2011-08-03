@@ -1,4 +1,5 @@
 #include <QtWebKit>
+#include "JavascriptTrigger.h"
 
 class WebPage : public QWebPage {
   Q_OBJECT
@@ -9,6 +10,7 @@ class WebPage : public QWebPage {
     QVariant invokeCapybaraFunction(QString &name, QStringList &arguments);
     QString failureString();
     QString userAgentForUrl(const QUrl &url ) const;
+    bool getJscoverageFlag();
     void setUserAgent(QString userAgent);
     int getLastStatus();
     void resetResponseHeaders();
@@ -34,9 +36,11 @@ class WebPage : public QWebPage {
     virtual QString chooseFile(QWebFrame * parentFrame, const QString &suggestedFile);
 
   private:
+    JavascriptTrigger m_javascript_trigger;
     QString m_capybaraJavascript;
     QString m_userAgent;
     bool m_loading;
+    bool m_jscoverage_flag;
     QString getLastAttachedFileName();
     void loadJavascript();
     void setUserStylesheet();

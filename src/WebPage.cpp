@@ -18,7 +18,8 @@ WebPage::WebPage(QObject *parent) : QWebPage(parent) {
 }
 
 void WebPage::setCustomNetworkAccessManager() {
-  NetworkAccessManager *manager = new NetworkAccessManager();
+  m_jscoverage_flag = !QString(getenv("JSCOVERAGE_REPORT")).isEmpty();
+  NetworkAccessManager *manager = new NetworkAccessManager(m_jscoverage_flag);
   this->setNetworkAccessManager(manager);
   connect(manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(replyFinished(QNetworkReply *)));
 }
@@ -50,6 +51,10 @@ QString WebPage::userAgentForUrl(const QUrl &url ) const {
   }
 }
 
+bool WebPage::getJscoverageFlag() {
+  return m_jscoverage_flag;
+}
+
 void WebPage::setUserAgent(QString userAgent) {
   m_userAgent = userAgent;
 }
@@ -61,6 +66,8 @@ void WebPage::frameCreated(QWebFrame * frame) {
 
 void WebPage::injectJavascriptHelpers() {
   QWebFrame* frame = qobject_cast<QWebFrame *>(QObject::sender());
+  //m_javascript_trigger.set_page(this);
+  frame->addToJavaScriptWindowObject(QString("CapybaraObject"), &m_javascript_trigger);
   frame->evaluateJavaScript(m_capybaraJavascript);
 }
 
