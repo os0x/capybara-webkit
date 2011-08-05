@@ -5,6 +5,7 @@
 
 NetworkAccessManager::NetworkAccessManager(bool jscoverage_flag, QObject *parent):QNetworkAccessManager(parent) {
   m_jscoverage_flag = jscoverage_flag;
+  m_javascript_file_path = "/coveraged/javascripts/instrumented/public/javascripts/";
 }
 
 QNetworkReply* NetworkAccessManager::createRequest(QNetworkAccessManager::Operation oparation, const QNetworkRequest &request, QIODevice * outgoingData = 0) {
@@ -12,7 +13,7 @@ QNetworkReply* NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
     return QNetworkAccessManager::createRequest(oparation, QNetworkRequest(QUrl()));
   } else if (m_jscoverage_flag && request.url().path().startsWith("/javascripts/")) {
     QUrl url = request.url();
-    url.setPath(url.path().replace("/javascripts/", "/coveraged/javascripts/instrumented/public/javascripts/"));
+    url.setPath(url.path().replace("/javascripts/", m_javascript_file_path));
     QNetworkRequest new_request(url);
     return QNetworkAccessManager::createRequest(oparation, new_request, outgoingData);
   } else {

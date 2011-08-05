@@ -15,6 +15,7 @@
 #include "Body.h"
 #include "Status.h"
 #include "Headers.h"
+#include "Exit.h"
 
 #include <QTcpSocket>
 #include <iostream>
@@ -28,7 +29,7 @@ Connection::Connection(QTcpSocket *socket, WebPage *page, QObject *parent) :
   m_pageSuccess = true;
   m_commandWaiting = false;
   connect(m_socket, SIGNAL(readyRead()), this, SLOT(checkNext()));
-  connect(m_page, SIGNAL(loadFinished(bool)), this, SLOT(pendingLoadFinished(bool)));
+  connect(m_page, SIGNAL(loadAndSpecFinished(bool)), this, SLOT(pendingLoadFinished(bool)));
 }
 
 void Connection::checkNext() {

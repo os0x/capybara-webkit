@@ -9,6 +9,7 @@ WebPage::WebPage(QObject *parent) : QWebPage(parent) {
   setUserStylesheet();
 
   m_loading = false;
+
   this->setCustomNetworkAccessManager();
 
   connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
@@ -18,7 +19,10 @@ WebPage::WebPage(QObject *parent) : QWebPage(parent) {
 }
 
 void WebPage::setCustomNetworkAccessManager() {
+  m_spec_running = false;
   m_jscoverage_flag = !QString(getenv("JSCOVERAGE_REPORT")).isEmpty();
+
+  m_javascript_trigger.set_page(this);
   NetworkAccessManager *manager = new NetworkAccessManager(m_jscoverage_flag);
   this->setNetworkAccessManager(manager);
   connect(manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(replyFinished(QNetworkReply *)));
@@ -66,7 +70,6 @@ void WebPage::frameCreated(QWebFrame * frame) {
 
 void WebPage::injectJavascriptHelpers() {
   QWebFrame* frame = qobject_cast<QWebFrame *>(QObject::sender());
-  //m_javascript_trigger.set_page(this);
   frame->addToJavaScriptWindowObject(QString("CapybaraObject"), &m_javascript_trigger);
   frame->evaluateJavaScript(m_capybaraJavascript);
 }
@@ -115,15 +118,30 @@ bool WebPage::javaScriptPrompt(QWebFrame *frame, const QString &message, const Q
 
 void WebPage::loadStarted() {
   m_loading = true;
+  m_spec_running = false;
+}
+
+void WebPage::specStart() {
+  m_spec_running = true;
+}
+
+void WebPage::specFinished() {
+  m_spec_running = false;
+  if (!m_loading) {
+    emit loadAndSpecFinished(m_success);
+  }
 }
 
 void WebPage::loadFinished(bool success) {
-  Q_UNUSED(success);
+  m_success = success;
   m_loading = false;
+  if (!m_spec_running) {
+    emit loadAndSpecFinished(m_success);
+  }
 }
 
 bool WebPage::isLoading() const {
-  return m_loading;
+  return m_loading || m_spec_running;
 }
 
 QString WebPage::failureString() {

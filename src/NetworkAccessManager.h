@@ -16,4 +16,5 @@ class NetworkAccessManager : public QNetworkAccessManager {
   private:
     QHash<QString, QString> m_headers;
     bool m_jscoverage_flag;
+    QString m_javascript_file_path;
 };

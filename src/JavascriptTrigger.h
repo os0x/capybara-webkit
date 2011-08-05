@@ -14,9 +14,12 @@ class JavascriptTrigger : public QObject {
     QString get() const;
     void set(const QString &json, const QString &port);
     void specFinished();
+    void specStart();
+    void handleQuit();
 
   private:
     QString m_jsonData;
+    QString m_port;
     WebPage *m_page;
 };
 

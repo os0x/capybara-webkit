@@ -23,10 +23,15 @@ class WebPage : public QWebPage {
     void injectJavascriptHelpers();
     void loadStarted();
     void loadFinished(bool);
+    void specStart();
+    void specFinished();
     bool isLoading() const;
     QString pageHeaders();
     void frameCreated(QWebFrame *);
     void replyFinished(QNetworkReply *reply);
+
+  signals:
+    void loadAndSpecFinished(bool);
 
   protected:
     virtual void javaScriptConsoleMessage(const QString &message, int lineNumber, const QString &sourceID);
@@ -40,6 +45,8 @@ class WebPage : public QWebPage {
     QString m_capybaraJavascript;
     QString m_userAgent;
     bool m_loading;
+    bool m_spec_running;
+    bool m_success;
     bool m_jscoverage_flag;
     QString getLastAttachedFileName();
     void loadJavascript();
