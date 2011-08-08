@@ -20,10 +20,13 @@ WebPage::WebPage(QObject *parent) : QWebPage(parent) {
 
 void WebPage::setCustomNetworkAccessManager() {
   m_spec_running = false;
-  m_jscoverage_flag = !QString(getenv("JSCOVERAGE_REPORT")).isEmpty();
+  bool jscoverage_flag = !QString(getenv("JSCOVERAGE_REPORT")).isEmpty();
+  QString jscoverage_path = QString(getenv("JSCOVERAGE_PATH"));
 
   m_javascript_trigger.set_page(this);
-  NetworkAccessManager *manager = new NetworkAccessManager(m_jscoverage_flag);
+  NetworkAccessManager *manager = new NetworkAccessManager();
+  manager->setJscoverageFlag(jscoverage_flag);
+  manager->setJscoveragePath(jscoverage_path);
   this->setNetworkAccessManager(manager);
   connect(manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(replyFinished(QNetworkReply *)));
 }
