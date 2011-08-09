@@ -102,7 +102,13 @@ class Capybara::Driver::Webkit
 
       pipe, @pid = server_pipe_and_pid(server_path)
 
-      at_exit { Process.kill("INT", @pid) }
+      at_exit {
+        if @socket.is_a? Capybara::Driver::Webkit::SocketDebugger
+          Process.kill("INT", @pid)
+        else
+          @socket.puts 'Exit'
+        end
+      }
 
       pipe
     end
