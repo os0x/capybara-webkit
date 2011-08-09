@@ -50,7 +50,7 @@ void FrameFocus::focusId(QString name) {
 
 void FrameFocus::focusParent() {
   if (page()->currentFrame()->parentFrame() == 0) {
-    emit finished(new Response(false, "Already at parent frame."));
+    success();
   } else {
     page()->currentFrame()->parentFrame()->setFocus();
     success();

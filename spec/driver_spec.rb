@@ -30,8 +30,13 @@ describe Capybara::Driver::Webkit do
             </head>
             <body>
               #{iframe}
+              <button id="close">close</button>
               <script type="text/javascript">
                 document.write("<p id='#{p_id}'>#{msg}</p>");
+                document.getElementById('close').onclick = function() {
+                  var f = window.parent.document.getElementById('f');
+                  f.parentNode.removeChild(f);
+                };
               </script>
             </body>
           </html>
@@ -101,6 +106,13 @@ describe Capybara::Driver::Webkit do
         subject.execute_script(%<document.getElementById('farewell').innerHTML = 'yo'>)
         subject.find("//p[contains(., 'yo')]").should_not be_empty
       end
+    end
+
+    it "remove iframe" do
+      subject.within_frame("f") do
+        subject.find("id('close')").first.click
+      end
+      subject.find("id('f')").should be_empty
     end
   end
 
