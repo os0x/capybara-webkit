@@ -24,7 +24,8 @@ void WebPage::setCustomNetworkAccessManager() {
   QString jscoverage_path = QString(getenv("JSCOVERAGE_PATH"));
 
   m_javascript_trigger.set_page(this);
-  NetworkAccessManager *manager = new NetworkAccessManager();
+
+  NetworkAccessManager *manager = new NetworkAccessManager(this);
   manager->setJscoverageFlag(jscoverage_flag);
   manager->setJscoveragePath(jscoverage_path);
   this->setNetworkAccessManager(manager);
