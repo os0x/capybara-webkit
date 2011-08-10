@@ -13,6 +13,8 @@ class JavascriptTrigger : public QObject {
   public slots:
     QString get() const;
     void set(const QString &json, const QString &port);
+    void onload();
+    void onloadStart();
     void specFinished();
     void specStart();
     void handleQuit();

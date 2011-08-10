@@ -22,7 +22,7 @@ void NetworkAccessManager::setJscoveragePath(QString javascript_file_path) {
 
 void NetworkAccessManager::replyFinished(QNetworkReply* network_reply) {
   if (network_reply->isFinished() && m_ajax_request_flag) {
-    m_page->loadFinished(true);
+    m_page->currentFrame()->evaluateJavaScript("setTimeout(function(){CapybaraObject.onload();}, 10);");
     m_ajax_request_flag = false;
   }
 };

@@ -97,8 +97,8 @@ QVariant WebPage::invokeCapybaraFunction(QString &name, QStringList &arguments) 
 
 void WebPage::javaScriptConsoleMessage(const QString &message, int lineNumber, const QString &sourceID) {
   if (!sourceID.isEmpty())
-    std::cout << qPrintable(sourceID) << ":" << lineNumber << " ";
-  std::cout << qPrintable(message) << std::endl;
+    std::cerr << qPrintable(sourceID) << ":" << lineNumber << " ";
+  std::cerr << qPrintable(message) << std::endl;
 }
 
 void WebPage::javaScriptAlert(QWebFrame *frame, const QString &message) {

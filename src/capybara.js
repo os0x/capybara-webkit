@@ -203,7 +203,7 @@ window.addEventListener('unload', function(){
     var rv = JSON.parse(CapybaraObject.get());
     for( var file_name in window._$jscoverage ) {
       //console.log(rv[file_name] + ' :: ' + file_name);
-      var jscov = window._$jscoverage[ file_name ]; 
+      var jscov = window._$jscoverage[ file_name ];
       var file_report = rv[ file_name ] || (rv[file_name] = {
         coverage: new Array( jscov.length ),
         source:   new Array( jscov.length )

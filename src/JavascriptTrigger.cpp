@@ -21,6 +21,14 @@ void JavascriptTrigger::specStart() {
   m_page->specStart();
 }
 
+void JavascriptTrigger::onload() {
+  m_page->loadFinished(true);
+}
+
+void JavascriptTrigger::onloadStart() {
+  m_page->loadStarted();
+}
+
 void JavascriptTrigger::handleQuit() {
   if (m_port.isEmpty()) {
     return;
