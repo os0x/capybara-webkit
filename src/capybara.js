@@ -206,13 +206,17 @@ window.addEventListener('unload', function(){
       var jscov = window._$jscoverage[ file_name ];
       var file_report = rv[ file_name ] || (rv[file_name] = {
         coverage: new Array( jscov.length ),
-        source:   new Array( jscov.length )
+        source:   new Array( jscov.length ),
+        conditionals: new Array(jscov.length)
       });
       for( var i=0; i < jscov.length; ++i ) {
         var hit_count = jscov[ i ] !== undefined ? jscov[ i ] : null;
 
         file_report.coverage[ i ] = file_report.coverage[ i ] ? file_report.coverage[ i ] + hit_count : hit_count;
         file_report.source[ i ]   = jscov.source[ i ];
+        if (jscov.conditionals && jscov.conditionals[i]) {
+          file_report.conditionals[i] = jscov.conditionals[i];
+        }
       }
     }
     CapybaraObject.set(JSON.stringify(rv), location.port);
