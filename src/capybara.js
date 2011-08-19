@@ -202,7 +202,7 @@ window.addEventListener('unload', function(){
   if(window._$jscoverage) {
     var rv = JSON.parse(CapybaraObject.get());
     for( var file_name in window._$jscoverage ) {
-      //console.log(rv[file_name] + ' :: ' + file_name);
+      //console.log(rv[file_name] + ' :: ' + file_name + ' : ' + location.href);
       var jscov = window._$jscoverage[ file_name ];
       var file_report = rv[ file_name ] || (rv[file_name] = {
         coverage: new Array( jscov.length ),
@@ -219,7 +219,7 @@ window.addEventListener('unload', function(){
         }
       }
     }
-    CapybaraObject.set(JSON.stringify(rv), location.port);
+    CapybaraObject.set(JSON.stringify(rv,null,2), location.port);
   }
 }, false);
 
