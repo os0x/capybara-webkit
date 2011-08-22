@@ -107,6 +107,7 @@ class Capybara::Driver::Webkit
           Process.kill("INT", @pid)
         else
           @socket.puts 'Exit'
+          @socket.puts 0
         end
       }
 
