@@ -12,6 +12,7 @@ class Capybara::Driver::Webkit
       @stdout       = options.has_key?(:stdout) ?
                         options[:stdout] :
                         $stdout
+      @server_host = options[:server_host]
       start_server
       connect
     end
@@ -98,7 +99,7 @@ class Capybara::Driver::Webkit
     end
 
     def fork_server
-      server_path = File.expand_path("../../../../../bin/webkit_server", __FILE__)
+      server_path = File.expand_path("../../../../../bin/webkit_server --server-host=#{@server_host}", __FILE__)
 
       pipe, @pid = server_pipe_and_pid(server_path)
 
@@ -120,6 +121,7 @@ class Capybara::Driver::Webkit
     def forward_stdout(pipe)
       while pipe_readable?(pipe)
         line = pipe.readline
+        puts line
         if @stdout
           @stdout.write(line)
           @stdout.flush

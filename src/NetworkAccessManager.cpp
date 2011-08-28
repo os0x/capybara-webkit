@@ -7,13 +7,16 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent):QNetworkAccessManage
 }
 
 QNetworkReply* NetworkAccessManager::createRequest(QNetworkAccessManager::Operation oparation, const QNetworkRequest &request, QIODevice * outgoingData = 0) {
-  QNetworkRequest new_request(request);
+  if (request.url().toString().startsWith("http://www.example.com")) {
+    request.url().setUrl(request.url().toString().replace("http://www.example.com", m_default_host))
+    //request.setUrl()
+  } else {
   QHashIterator<QString, QString> item(m_headers);
   while (item.hasNext()) {
       item.next();
-      new_request.setRawHeader(item.key().toAscii(), item.value().toAscii());
+      request.setRawHeader(item.key().toAscii(), item.value().toAscii());
   }
-  return QNetworkAccessManager::createRequest(oparation, new_request, outgoingData);
+  return QNetworkAccessManager::createRequest(oparation, request, outgoingData);
 };
 
 void NetworkAccessManager::addHeader(QString key, QString value) {

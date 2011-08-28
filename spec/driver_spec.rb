@@ -871,4 +871,32 @@ describe Capybara::Driver::Webkit do
       driver_with_debugger.find("//*[@id='parent']")
     end
   end
+
+  context "app host" do
+    before(:all) do
+      @app = lambda do |env|
+        params = ::Rack::Utils.parse_query(env['QUERY_STRING'])
+        if params["iframe"] == "true"
+        else
+        end 
+        body = <<-HTML
+          <html>
+            <head>
+            </head>
+            <body>
+              <p>capybara-webkit</p>
+            </body>
+          </html>
+        HTML
+        [200,
+          { 'Content-Type' => 'text/html', 'Content-Length' => body.length.to_s },
+          [body]]
+      end
+    end
+
+    it "finds frames by index" do
+      subject.visit Capybara.default_host
+      subject.find("//p").first.text.should == "capybara-webkit"
+    end
+  end
 end

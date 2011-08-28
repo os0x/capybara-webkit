@@ -17,7 +17,7 @@ class Capybara::Driver::Webkit
     @options = options
     @rack_server = Capybara::Server.new(@app)
     @rack_server.boot if Capybara.run_server
-    @browser = options[:browser] || Browser.new
+    @browser = options[:browser] || Browser.new(:server_host => @rack_server.url)
   end
 
   def current_url
