@@ -23,6 +23,7 @@ class Capybara::Driver::Webkit
     @rack_server.boot if Capybara.run_server
     @browser = options[:browser] || Browser.new(
       :ignore_ssl_errors => options[:ignore_ssl_errors])
+    set_real_host
   end
 
   def current_url
@@ -111,8 +112,14 @@ class Capybara::Driver::Webkit
 
   private
 
+  def set_real_host(real_host=nil)
+    @real_host = "127.0.0.1:#{@rack_server.port}" if real_host == nil
+    @def_host = Capybara.default_host.sub('http://', '')
+    browser.host @real_host, @def_host
+  end
+
   def url(path)
-    @rack_server.url(path)
+    @rack_server.url(path).sub(@real_host, @def_host)
   end
 end
 

@@ -209,7 +209,12 @@ QString WebPage::getLastAttachedFileName() {
 }
 
 void WebPage::replyFinished(QNetworkReply *reply) {
-  if (reply->url() == this->currentFrame()->url()) {
+  QUrl url = reply->url();
+  QString host = url.host() + ":" + QString::number(url.port());
+  if (host == m_realHost) {
+    url.setUrl(url.toString().replace(m_realHost, m_defaultHost));
+  }
+  if (url == this->currentFrame()->url()) {
     QStringList headers;
     m_lastStatus = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     QList<QByteArray> list = reply->rawHeaderList();
@@ -253,4 +258,20 @@ QString WebPage::pageHeaders() {
 void WebPage::handleUnsupportedContent(QNetworkReply *reply) {
   UnsupportedContentHandler *handler = new UnsupportedContentHandler(this, reply);
   Q_UNUSED(handler);
+}
+
+QString WebPage::getDefaultHost() {
+  return m_defaultHost;
+}
+
+void WebPage::setDefaultHost(QString host) {
+  m_defaultHost = host;
+}
+
+QString WebPage::getRealHost() {
+  return m_realHost;
+}
+
+void WebPage::setRealHost(QString host) {
+  m_realHost = host;
 }

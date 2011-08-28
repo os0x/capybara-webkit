@@ -33,6 +33,7 @@ HEADERS = \
   SetProxy.h \
   JavascriptTrigger.h \
   Exit.h \
+  Host.h \
 
 SOURCES = \
   main.cpp \
@@ -67,6 +68,7 @@ SOURCES = \
   SetProxy.cpp \
   JavascriptTrigger.cpp \
   Exit.cpp \
+  Host.cpp \
 
 RESOURCES = webkit_server.qrc
 QT += network webkit

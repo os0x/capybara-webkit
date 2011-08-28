@@ -83,8 +83,7 @@ describe Capybara::Driver::Webkit do
 
     it "returns the current URL" do
       subject.within_frame("f") do
-        port = subject.instance_variable_get("@rack_server").port
-        subject.current_url.should == "http://127.0.0.1:#{port}/?iframe=true"
+        subject.current_url.should == "#{Capybara.default_host}/?iframe=true"
       end
     end
 
@@ -231,8 +230,7 @@ describe Capybara::Driver::Webkit do
     end
 
     it "returns the current URL" do
-      port = subject.instance_variable_get("@rack_server").port
-      subject.current_url.should == "http://127.0.0.1:#{port}/hello/world?success=true"
+      subject.current_url.should == "#{Capybara.default_host}/hello/world?success=true"
     end
 
     it "escapes URLs" do
@@ -1121,6 +1119,34 @@ describe Capybara::Driver::Webkit do
     it "waits for a request to load" do
       subject.find("//a").first.click
       subject.find("//p").first.text.should == "/ajax"
+    end
+  end
+
+  context "app host" do
+    before(:all) do
+      @app = lambda do |env|
+        body = <<-HTML
+          <html>
+            <head>
+            </head>
+            <body>
+              <p>capybara-webkit</p>
+            </body>
+          </html>
+        HTML
+        [200,
+          { 'Content-Type' => 'text/html', 'Content-Length' => body.length.to_s },
+          [body]]
+      end
+    end
+
+    it "can load capybara default host" do
+      subject.visit Capybara.default_host
+      subject.find("//p").first.text.should == "capybara-webkit"
+    end
+    it "can load ssl" do
+      subject.visit Capybara.default_host.sub('http://', 'https://')
+      subject.find("//p").first.text.should == "capybara-webkit"
     end
   end
 end
