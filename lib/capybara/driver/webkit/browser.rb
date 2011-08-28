@@ -52,6 +52,10 @@ class Capybara::Driver::Webkit
       command("Url")
     end
 
+    def host(host)
+      command("Host", host)
+    end
+
     def frame_focus(frame_id_or_index=nil)
       if frame_id_or_index.is_a? Fixnum
         command("FrameFocus", "", frame_id_or_index.to_s)
@@ -160,7 +164,7 @@ class Capybara::Driver::Webkit
 
       if result.nil?
         raise WebkitNoResponseError, "No response received from the server."
-      elsif result != 'ok' 
+      elsif result != 'ok'
         raise WebkitInvalidResponseError, read_response
       end
 

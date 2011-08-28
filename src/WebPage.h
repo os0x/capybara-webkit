@@ -9,6 +9,8 @@ class WebPage : public QWebPage {
     QVariant invokeCapybaraFunction(QString &name, QStringList &arguments);
     QString failureString();
     QString userAgentForUrl(const QUrl &url ) const;
+    QString getDefaultHost();
+    void setDefaultHost(QString host);
     void setUserAgent(QString userAgent);
     int getLastStatus();
     void resetResponseHeaders();
@@ -36,6 +38,7 @@ class WebPage : public QWebPage {
   private:
     QString m_capybaraJavascript;
     QString m_userAgent;
+    QString m_defaultHost;
     bool m_loading;
     QString getLastAttachedFileName();
     void loadJavascript();

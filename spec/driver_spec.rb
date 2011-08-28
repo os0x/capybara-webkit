@@ -20,7 +20,7 @@ describe Capybara::Driver::Webkit do
           p_id = "greeting"
           msg  = "hello"
           iframe = "<iframe id=\"f\" src=\"/?iframe=true\"></iframe>"
-        end 
+        end
         body = <<-HTML
           <html>
             <head>
@@ -782,7 +782,7 @@ describe Capybara::Driver::Webkit do
           [body]]
       end
     end
-    
+
     it "raises a webkit error for the requested url" do
       make_the_server_go_away
       expect {
@@ -797,7 +797,7 @@ describe Capybara::Driver::Webkit do
       subject.browser.instance_variable_get(:@socket).unstub!(:puts)
       subject.browser.instance_variable_get(:@socket).unstub!(:print)
     end
- 
+
     def make_the_server_go_away
       subject.browser.instance_variable_get(:@socket).stub!(:gets).and_return(nil)
       subject.browser.instance_variable_get(:@socket).stub!(:puts)
@@ -869,6 +869,34 @@ describe Capybara::Driver::Webkit do
       socket_debugger_class.any_instance.stub(:sent)
       socket_debugger_class.any_instance.should_receive(:received).at_least(:once).and_return("ok")
       driver_with_debugger.find("//*[@id='parent']")
+    end
+  end
+
+  context "app host" do
+    before(:all) do
+      @app = lambda do |env|
+        params = ::Rack::Utils.parse_query(env['QUERY_STRING'])
+        if params["iframe"] == "true"
+        else
+        end
+        body = <<-HTML
+          <html>
+            <head>
+            </head>
+            <body>
+              <p>capybara-webkit</p>
+            </body>
+          </html>
+        HTML
+        [200,
+          { 'Content-Type' => 'text/html', 'Content-Length' => body.length.to_s },
+          [body]]
+      end
+    end
+
+    it "finds frames by index" do
+      subject.visit Capybara.default_host
+      subject.find("//p").first.text.should == "capybara-webkit"
     end
   end
 end

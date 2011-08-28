@@ -2,12 +2,14 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
 
+class WebPage;
+
 class NetworkAccessManager : public QNetworkAccessManager {
 
   Q_OBJECT
 
   public:
-    NetworkAccessManager(QObject *parent = 0);
+    NetworkAccessManager(WebPage *page, QObject *parent = 0);
     void addHeader(QString key, QString value);
 
   protected:
@@ -15,4 +17,5 @@ class NetworkAccessManager : public QNetworkAccessManager {
 
   private:
     QHash<QString, QString> m_headers;
+    WebPage *m_page;
 };

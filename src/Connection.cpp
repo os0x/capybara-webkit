@@ -15,6 +15,7 @@
 #include "Body.h"
 #include "Status.h"
 #include "Headers.h"
+#include "Host.h"
 
 #include <QTcpSocket>
 #include <iostream>

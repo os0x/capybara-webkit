@@ -18,6 +18,7 @@ class Capybara::Driver::Webkit
     @rack_server = Capybara::Server.new(@app)
     @rack_server.boot if Capybara.run_server
     @browser = options[:browser] || Browser.new
+    set_real_host
   end
 
   def current_url
@@ -101,6 +102,11 @@ class Capybara::Driver::Webkit
   end
 
   private
+
+  def set_real_host(host=nil)
+    host = "http://localhost:#{@rack_server.port}" if host == nil
+    browser.host host
+  end
 
   def url(path)
     @rack_server.url(path)

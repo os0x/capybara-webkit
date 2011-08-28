@@ -18,7 +18,7 @@ WebPage::WebPage(QObject *parent) : QWebPage(parent) {
 }
 
 void WebPage::setCustomNetworkAccessManager() {
-  NetworkAccessManager *manager = new NetworkAccessManager();
+  NetworkAccessManager *manager = new NetworkAccessManager(this);
   this->setNetworkAccessManager(manager);
   connect(manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(replyFinished(QNetworkReply *)));
 }
@@ -196,4 +196,12 @@ void WebPage::resetResponseHeaders() {
 
 QString WebPage::pageHeaders() {
   return m_pageHeaders;
+}
+
+QString WebPage::getDefaultHost() {
+  return m_defaultHost;
+}
+
+void WebPage::setDefaultHost(QString host) {
+  m_defaultHost = host;
 }
