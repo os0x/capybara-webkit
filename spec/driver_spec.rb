@@ -861,7 +861,11 @@ describe Capybara::Driver::Webkit do
     it "prints out sent content" do
       socket_debugger_class.any_instance.stub(:received){|content| content }
       sent_content = ['Find', 1, 17, "//*[@id='parent']"]
-      socket_debugger_class.any_instance.should_receive(:sent).exactly(sent_content.size).times
+      socket_debugger_class.any_instance.should_receive(:sent) {|content|
+        if content == sent_content.first
+          content.should == sent_content.shift
+        end
+      }.at_least(sent_content.size).times
       driver_with_debugger.find("//*[@id='parent']")
     end
 
