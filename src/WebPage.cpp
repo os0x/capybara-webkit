@@ -205,3 +205,11 @@ QString WebPage::getDefaultHost() {
 void WebPage::setDefaultHost(QString host) {
   m_defaultHost = host;
 }
+
+QString WebPage::getRealHost() {
+  return m_realHost;
+}
+
+void WebPage::setRealHost(QString host) {
+  m_realHost = host;
+}

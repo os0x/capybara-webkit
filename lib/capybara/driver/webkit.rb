@@ -103,9 +103,9 @@ class Capybara::Driver::Webkit
 
   private
 
-  def set_real_host(host=nil)
-    host = "http://localhost:#{@rack_server.port}" if host == nil
-    browser.host host
+  def set_real_host(real_host=nil)
+    real_host = "localhost:#{@rack_server.port}" if real_host == nil
+    browser.host real_host, Capybara.default_host.sub('http://', '')
   end
 
   def url(path)

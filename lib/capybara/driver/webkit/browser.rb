@@ -52,8 +52,8 @@ class Capybara::Driver::Webkit
       command("Url")
     end
 
-    def host(host)
-      command("Host", host)
+    def host(real_host, default_host)
+      command("Host", real_host, default_host)
     end
 
     def frame_focus(frame_id_or_index=nil)

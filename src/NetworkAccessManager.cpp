@@ -8,9 +8,9 @@ NetworkAccessManager::NetworkAccessManager(WebPage *page, QObject *parent):QNetw
 
 QNetworkReply* NetworkAccessManager::createRequest(QNetworkAccessManager::Operation oparation, const QNetworkRequest &request, QIODevice * outgoingData = 0) {
   QNetworkRequest new_request(request);
-  if (request.url().toString().startsWith("http://www.example.com")) {
+  if (request.url().host() == m_page->getDefaultHost()) {
     QUrl url = request.url();
-    url.setUrl(request.url().toString().replace("http://www.example.com", m_page->getDefaultHost()));
+    url.setUrl(request.url().toString().replace("https://", "http://").replace(m_page->getDefaultHost(), m_page->getRealHost()));
     new_request.setUrl(url);
   }
   QHashIterator<QString, QString> item(m_headers);

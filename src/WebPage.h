@@ -9,14 +9,17 @@ class WebPage : public QWebPage {
     QVariant invokeCapybaraFunction(QString &name, QStringList &arguments);
     QString failureString();
     QString userAgentForUrl(const QUrl &url ) const;
-    QString getDefaultHost();
-    void setDefaultHost(QString host);
     void setUserAgent(QString userAgent);
     int getLastStatus();
     void resetResponseHeaders();
     void setCustomNetworkAccessManager();
     bool render(const QString &fileName);
     virtual bool extension (Extension extension, const ExtensionOption *option=0, ExtensionReturn *output=0);
+
+    QString getDefaultHost();
+    void setDefaultHost(QString host);
+    QString getRealHost();
+    void setRealHost(QString host);
 
   public slots:
     bool shouldInterruptJavaScript();
@@ -39,6 +42,7 @@ class WebPage : public QWebPage {
     QString m_capybaraJavascript;
     QString m_userAgent;
     QString m_defaultHost;
+    QString m_realHost;
     bool m_loading;
     QString getLastAttachedFileName();
     void loadJavascript();

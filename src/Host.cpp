@@ -5,6 +5,7 @@ Host::Host(WebPage *page, QObject *parent) : Command(page, parent) {
 }
 
 void Host::start(QStringList &arguments) {
-  page()->setDefaultHost(QString(arguments[0]));
+  page()->setRealHost(QString(arguments[0]));
+  page()->setDefaultHost(QString(arguments[1]));
   emit finished(new Response(true));
 }
