@@ -879,10 +879,6 @@ describe Capybara::Driver::Webkit do
   context "app host" do
     before(:all) do
       @app = lambda do |env|
-        params = ::Rack::Utils.parse_query(env['QUERY_STRING'])
-        if params["iframe"] == "true"
-        else
-        end
         body = <<-HTML
           <html>
             <head>
@@ -898,8 +894,12 @@ describe Capybara::Driver::Webkit do
       end
     end
 
-    it "finds frames by index" do
+    it "can load capybara default host" do
       subject.visit Capybara.default_host
+      subject.find("//p").first.text.should == "capybara-webkit"
+    end
+    it "can load ssl" do
+      subject.visit Capybara.default_host.sub('http://', 'https://')
       subject.find("//p").first.text.should == "capybara-webkit"
     end
   end
