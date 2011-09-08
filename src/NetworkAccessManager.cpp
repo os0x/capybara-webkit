@@ -29,6 +29,7 @@ void NetworkAccessManager::replyFinished(QNetworkReply* network_reply) {
 };
 
 void NetworkAccessManager::slotSslErrors(QNetworkReply* reply, QList<QSslError> const & errors) {
+  Q_UNUSED(errors);
   reply->ignoreSslErrors();
 };
 

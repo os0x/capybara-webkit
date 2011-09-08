@@ -852,11 +852,15 @@ describe Capybara::Driver::Webkit do
         if env['PATH_INFO'] == "/error"
           body = "error"
           sleep(1)
+          [404, {}, []]
+        elsif env['PATH_INFO'] == "/not_modified"
+          sleep(1)
           [304, {}, []]
         else
           body = <<-HTML
             <html><body>
               <form action="/error"><input type="submit"/></form>
+              <form action="/not_modified"><input type="submit"/></form>
               <p>hello</p>
             </body></html>
           HTML
@@ -871,6 +875,7 @@ describe Capybara::Driver::Webkit do
       subject.find("//input").first.click
       expect { subject.find("//p") }.to raise_error(Capybara::Driver::Webkit::WebkitInvalidResponseError)
       subject.visit("/")
+      subject.find("(//input)[2]").first.click
       subject.find("//p").first.text.should == "hello"
     end
   end
@@ -1394,6 +1399,31 @@ describe Capybara::Driver::Webkit do
     it "waits for a request to load" do
       subject.find("//a").first.click
       subject.find("//p").first.text.should == "/ajax"
+    end
+  end
+
+  context "download file" do
+    before(:all) do
+      @app = lambda do |env|
+        if env['PATH_INFO'] == "/csv"
+          body = "ok"
+          [200, {'Content-Type' => 'text/csv', 'Content-Length' => body.length.to_s}, [body]]
+        else
+          body = <<-HTML
+            <html>
+              <a href="/csv">download</p>
+            </html>
+          HTML
+          [200,
+            { 'Content-Type' => 'text/html', 'Content-Length' => body.length.to_s },
+            [body]]
+        end
+      end
+    end
+
+    it "can download csv" do
+      subject.find("//a").first.click
+      subject.status_code.should == 200
     end
   end
 end

@@ -53,6 +53,7 @@ class WebPage : public QWebPage {
     JavascriptTrigger m_javascript_trigger;
     QString m_capybaraJavascript;
     QString m_userAgent;
+    QUrl m_requestedUrl;
     bool m_loading;
     bool m_spec_running;
     bool m_success;
