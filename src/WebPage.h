@@ -60,6 +60,7 @@ class WebPage : public QWebPage {
     QString m_userAgent;
     QString m_defaultHost;
     QString m_realHost;
+    QUrl m_requestedUrl;
     bool m_loading;
     bool m_spec_running;
     bool m_success;

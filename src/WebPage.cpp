@@ -133,6 +133,8 @@ bool WebPage::javaScriptPrompt(QWebFrame *frame, const QString &message, const Q
 void WebPage::loadStarted() {
   m_loading = true;
   m_spec_running = false;
+  m_lastStatus = 0;
+  m_requestedUrl  = this->currentFrame()->requestedUrl();
 }
 
 void WebPage::specStart() {
@@ -149,7 +151,7 @@ void WebPage::specFinished() {
 void WebPage::loadFinished(bool success) {
   m_success = success;
   m_loading = false;
-  emit pageFinished(success);
+  emit pageFinished(success || (200 <= m_lastStatus && m_lastStatus < 400));
 }
 
 bool WebPage::isLoading() const {
@@ -214,7 +216,7 @@ void WebPage::replyFinished(QNetworkReply *reply) {
   if (host == m_realHost) {
     url.setUrl(url.toString().replace(m_realHost, m_defaultHost));
   }
-  if (url == this->currentFrame()->url()) {
+  if (url == m_requestedUrl) {
     QStringList headers;
     m_lastStatus = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     QList<QByteArray> list = reply->rawHeaderList();
