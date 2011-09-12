@@ -53,9 +53,6 @@ QNetworkReply* NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
   }
   QNetworkRequest new_request(request);
   QUrl url = request.url();
-  if (url.scheme() == "https") {
-    url.setUrl(url.toString().replace("https://", "http://"));
-  }
   if (url.host() == m_page->getDefaultHost()) {
     url.setUrl(url.toString().replace(m_page->getDefaultHost(), m_page->getRealHost()));
   }

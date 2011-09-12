@@ -1156,10 +1156,6 @@ describe Capybara::Driver::Webkit do
       subject.visit Capybara.default_host
       subject.find("//p").first.text.should == "capybara-webkit"
     end
-    it "can load ssl" do
-      subject.visit Capybara.default_host.sub('http://', 'https://')
-      subject.find("//p").first.text.should == "capybara-webkit"
-    end
   end
 
   context "download file" do
