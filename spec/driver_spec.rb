@@ -45,6 +45,7 @@ describe Capybara::Driver::Webkit do
           { 'Content-Type' => 'text/html', 'Content-Length' => body.length.to_s },
           [body]]
       end
+      subject.set_real_host
     end
 
     it "finds frames by index" do
@@ -190,6 +191,7 @@ describe Capybara::Driver::Webkit do
           { 'Content-Type' => 'text/html', 'Content-Length' => body.length.to_s },
           [body]]
       end
+      subject.set_real_host
     end
 
     it "handles anchor tags" do
@@ -1150,6 +1152,7 @@ describe Capybara::Driver::Webkit do
     end
 
     it "can load capybara default host" do
+      subject.set_real_host
       subject.visit Capybara.default_host
       subject.find("//p").first.text.should == "capybara-webkit"
     end

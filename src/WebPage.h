@@ -11,8 +11,6 @@ class WebPage : public QWebPage {
     QString failureString();
     QString userAgentForUrl(const QUrl &url ) const;
     bool getJscoverageFlag();
-    QString getDefaultHost();
-    void setDefaultHost(QString host);
     void setUserAgent(QString userAgent);
     int getLastStatus();
     void resetResponseHeaders();
