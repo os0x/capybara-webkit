@@ -25,7 +25,7 @@ WebPage::WebPage(QObject *parent) : QWebPage(parent) {
 }
 
 void WebPage::setCustomNetworkAccessManager() {
-  NetworkAccessManager *manager = new NetworkAccessManager();
+  NetworkAccessManager *manager = new NetworkAccessManager(this);
   manager->setCookieJar(new NetworkCookieJar());
 
   m_spec_running = false;
@@ -133,7 +133,6 @@ bool WebPage::javaScriptPrompt(QWebFrame *frame, const QString &message, const Q
 void WebPage::loadStarted() {
   m_loading = true;
   m_spec_running = false;
-  m_lastStatus = 0;
   m_requestedUrl  = this->currentFrame()->requestedUrl();
 }
 

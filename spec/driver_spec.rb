@@ -1179,6 +1179,7 @@ describe Capybara::Driver::Webkit do
 
     it "can download csv" do
       subject.find("//a").first.click
+      subject.response_headers['Content-Type'].should == 'text/csv'
       subject.status_code.should == 200
     end
   end
