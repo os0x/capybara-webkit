@@ -102,7 +102,9 @@ class Capybara::Driver::Webkit
 
       pipe, @pid = server_pipe_and_pid(server_path)
 
+      pid = Process.pid
       at_exit {
+        next unless pid == Process.pid
         if @socket.is_a? Capybara::Driver::Webkit::SocketDebugger
           Process.kill("INT", @pid)
         else
@@ -167,7 +169,7 @@ class Capybara::Driver::Webkit
 
       if result.nil?
         raise WebkitNoResponseError, "No response received from the server."
-      elsif result != 'ok' 
+      elsif result != 'ok'
         raise WebkitInvalidResponseError, read_response
       end
 
