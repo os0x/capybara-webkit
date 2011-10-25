@@ -19,6 +19,7 @@
 #include "GetCookies.h"
 #include "SetProxy.h"
 #include "Exit.h"
+#include "Host.h"
 
 CommandFactory::CommandFactory(WebPage *page, QObject *parent) : QObject(parent) {
   m_page = page;
