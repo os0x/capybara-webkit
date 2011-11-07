@@ -27,6 +27,7 @@ module CapybaraWebkitBuilder
 
   def build
     system(make_bin) or return false
+    return true if File.exist?("bin/webkit_server")
 
     FileUtils.mkdir("bin") unless File.directory?("bin")
     FileUtils.cp("src/webkit_server", "bin", :preserve => true)
