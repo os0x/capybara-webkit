@@ -1369,38 +1369,6 @@ describe Capybara::Driver::Webkit do
       subject.body.should include "Congrats"
     end
   end
-  context "slow ajax app" do
-    before(:all) do
-      @app = lambda do |env|
-        body = <<-HTML
-          <html><body>
-            <a href="/ajax" id=a>ajax</a>
-            <p id=path>#{env['PATH_INFO']}</p>
-            <script>
-              var a = document.getElementById('a');
-              var path = document.getElementById('path');
-              a.onclick = function(e) {
-                e.preventDefault();
-                var x = new XMLHttpRequest();
-                x.open('GET', a.href, true);
-                x.onload = function(){
-                  var d= document.createElement('div');
-                  d.innerHTML = x.responseText;
-                  path.textContent = d.querySelector('#path').textContent;
-                };
-                x.send();
-              };
-            </script>
-          </body></html>
-        HTML
-        sleep(0.5)
-      end
-    end
-    it "waits for a request to load" do
-      subject.find("//a").first.click
-      subject.find("//p").first.text.should == "/ajax"
-    end
-  end
 
   context "download file" do
     before(:all) do
@@ -1423,6 +1391,7 @@ describe Capybara::Driver::Webkit do
 
     it "can download csv" do
       subject.find("//a").first.click
+      subject.response_headers['Content-Type'].should == 'text/csv'
       subject.status_code.should == 200
     end
   end

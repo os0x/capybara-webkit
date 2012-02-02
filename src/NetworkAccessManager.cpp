@@ -10,7 +10,6 @@ NetworkAccessManager::NetworkAccessManager(WebPage *page, QObject *parent):QNetw
   m_page = page;
   m_ajax_request_flag = false;
   connect(this, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
-  connect(this, SIGNAL(sslErrors(QNetworkReply*, QList<QSslError>)), this, SLOT(slotSslErrors(QNetworkReply*, QList<QSslError>)));
 };
 
 void NetworkAccessManager::setJscoverageFlag(bool jscoverage_flag) {
@@ -26,11 +25,6 @@ void NetworkAccessManager::replyFinished(QNetworkReply* network_reply) {
     m_page->currentFrame()->evaluateJavaScript("setTimeout(function(){CapybaraObject.onload();}, 10);");
     m_ajax_request_flag = false;
   }
-};
-
-void NetworkAccessManager::slotSslErrors(QNetworkReply* reply, QList<QSslError> const & errors) {
-  Q_UNUSED(errors);
-  reply->ignoreSslErrors();
 };
 
 QNetworkReply* NetworkAccessManager::createRequest(QNetworkAccessManager::Operation operation, const QNetworkRequest &request, QIODevice * outgoingData = 0) {
@@ -51,11 +45,6 @@ QNetworkReply* NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
     QNetworkRequest new_request(url);
     return QNetworkAccessManager::createRequest(operation, new_request, outgoingData);
   }
-  QUrl url = request.url();
-  if (url.scheme() == "https") {
-    url.setUrl(url.toString().replace("https://", "http://"));
-  }
-  new_request.setUrl(url);
 
   QHashIterator<QString, QString> item(m_headers);
   while (item.hasNext()) {

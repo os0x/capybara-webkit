@@ -16,7 +16,6 @@ class NetworkAccessManager : public QNetworkAccessManager {
 
   public slots:
     void replyFinished(QNetworkReply* reply);
-    void slotSslErrors(QNetworkReply* reply, QList<QSslError> const & errors);
 
   protected:
     QNetworkReply* createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice * outgoingData);
