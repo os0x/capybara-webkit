@@ -43,24 +43,14 @@ QNetworkReply* NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
     m_page->loadStarted();
   }
   if ("googleads.g.doubleclick.net" == request.url().host() || "pagead2.googlesyndication.com" == request.url().host()) {
-    return QNetworkAccessManager::createRequest(oparation, QNetworkRequest(QUrl()));
+    return QNetworkAccessManager::createRequest(operation, QNetworkRequest(QUrl()));
   }
   if (m_jscoverage_flag && request.url().path().startsWith("/javascripts/")) {
     QUrl url = request.url();
     url.setPath(url.path().replace("/javascripts/", m_javascript_file_path));
     QNetworkRequest new_request(url);
-    return QNetworkAccessManager::createRequest(oparation, new_request, outgoingData);
+    return QNetworkAccessManager::createRequest(operation, new_request, outgoingData);
   }
-  QNetworkRequest new_request(request);
-  QUrl url = request.url();
-  if (url.scheme() == "https") {
-    url.setUrl(url.toString().replace("https://", "http://"));
-  }
-  if (url.host() == m_page->getDefaultHost()) {
-    url.setUrl(url.toString().replace(m_page->getDefaultHost(), m_page->getRealHost()));
-  }
-  new_request.setUrl(url);
-
   QHashIterator<QString, QString> item(m_headers);
   while (item.hasNext()) {
     item.next();
