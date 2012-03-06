@@ -13,14 +13,6 @@ void JavascriptTrigger::set_page(WebPage *page) {
   m_page = page;
 }
 
-void JavascriptTrigger::specFinished() {
-  m_page->specFinished();
-}
-
-void JavascriptTrigger::specStart() {
-  m_page->specStart();
-}
-
 void JavascriptTrigger::onload() {
   m_page->loadFinished(true);
 }
@@ -53,6 +45,7 @@ void JavascriptTrigger::set(const QString &json, const QString &port) {
   m_jsonData = json;
   m_port = port;
 }
+
 QString JavascriptTrigger::get() const {
   if (m_jsonData.isEmpty()) {
     return QString("{}");

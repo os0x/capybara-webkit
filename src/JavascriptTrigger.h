@@ -15,8 +15,6 @@ class JavascriptTrigger : public QObject {
     void set(const QString &json, const QString &port);
     void onload();
     void onloadStart();
-    void specFinished();
-    void specStart();
     void handleQuit();
 
   private:

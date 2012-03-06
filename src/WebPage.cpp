@@ -25,10 +25,9 @@ WebPage::WebPage(QObject *parent) : QWebPage(parent) {
 }
 
 void WebPage::setCustomNetworkAccessManager() {
-  NetworkAccessManager *manager = new NetworkAccessManager(this);
+  NetworkAccessManager *manager = new NetworkAccessManager();
   manager->setCookieJar(new NetworkCookieJar());
 
-  m_spec_running = false;
   bool jscoverage_flag = !QString(getenv("JSCOVERAGE_REPORT")).isEmpty();
   QString jscoverage_path = QString(getenv("JSCOVERAGE_PATH"));
 
@@ -138,20 +137,8 @@ bool WebPage::javaScriptPrompt(QWebFrame *frame, const QString &message, const Q
 
 void WebPage::loadStarted() {
   m_loading = true;
-  m_spec_running = false;
   m_lastStatus = 0;
   m_requestedUrl  = this->currentFrame()->requestedUrl();
-}
-
-void WebPage::specStart() {
-  m_spec_running = true;
-}
-
-void WebPage::specFinished() {
-  m_spec_running = false;
-  if (!m_loading) {
-    emit loadAndSpecFinished(m_success);
-  }
 }
 
 void WebPage::loadFinished(bool success) {
@@ -161,7 +148,7 @@ void WebPage::loadFinished(bool success) {
 }
 
 bool WebPage::isLoading() const {
-  return m_loading || m_spec_running;
+  return m_loading;
 }
 
 QString WebPage::failureString() {
