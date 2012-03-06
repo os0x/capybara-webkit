@@ -39,6 +39,9 @@ QNetworkReply* NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
   if ("googleads.g.doubleclick.net" == request.url().host() || "pagead2.googlesyndication.com" == request.url().host()) {
     return QNetworkAccessManager::createRequest(operation, QNetworkRequest(QUrl()));
   }
+  if (request.url().path().startsWith("/images/")) {
+    return QNetworkAccessManager::createRequest(operation, QNetworkRequest(QUrl()));
+  }
   if (m_jscoverage_flag && request.url().path().startsWith("/javascripts/")) {
     QUrl url = request.url();
     url.setPath(url.path().replace("/javascripts/", m_javascript_file_path));
